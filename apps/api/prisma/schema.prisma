@@ -1,0 +1,226 @@
+generator client {
+  provider     = "prisma-client-js"
+  output       = "../src/__generated__/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Better Auth Pflicht-Modelle ─────────────────────────────
+
+model User {
+  id            String   @id
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+// ─── Enums ───────────────────────────────────────────────────
+
+enum TableStatus {
+  FREE
+  OCCUPIED
+  PARTIALLY_PAID
+}
+
+enum OrderStatus {
+  DRAFT
+  SENT_TO_KITCHEN
+  IN_PROGRESS
+  READY
+  SERVED
+  PARTIALLY_PAID
+  PAID
+  CLOSED
+}
+
+enum OrderItemStatus {
+  CREATED
+  SENT_TO_KITCHEN
+  READY
+  SERVED
+  PAID
+}
+
+enum OrderItemLineType {
+  MAIN
+  ADDON
+  TOPPING
+  DRINK
+  SIDE
+}
+
+enum MenuItemType {
+  MAIN
+  DRINK
+  ADDON
+  TOPPING
+  SIDE
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+}
+
+// ─── Restaurant Models ───────────────────────────────────────
+
+model Table {
+  id        String      @id @default(cuid())
+  number    Int         @unique
+  name      String?
+  capacity  Int
+  status    TableStatus @default(FREE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  orders Order[]
+
+  @@map("table")
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  tableId   String
+  table     Table       @relation(fields: [tableId], references: [id])
+  status    OrderStatus @default(DRAFT)
+  notes     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  items    OrderItem[]
+  payments Payment[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  id         String            @id @default(cuid())
+  orderId    String
+  order      Order             @relation(fields: [orderId], references: [id])
+  menuItemId String
+  menuItem   MenuItem          @relation(fields: [menuItemId], references: [id])
+  parentId   String?
+  parent     OrderItem?        @relation("OrderItemChildren", fields: [parentId], references: [id])
+  children   OrderItem[]       @relation("OrderItemChildren")
+  lineType   OrderItemLineType
+  status     OrderItemStatus   @default(CREATED)
+  quantity   Int               @default(1)
+  unitPrice  Decimal           @db.Decimal(10, 2)
+  notes      String?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  paymentAllocations PaymentItemAllocation[]
+
+  @@map("order_item")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  orderId   String
+  order     Order         @relation(fields: [orderId], references: [id])
+  method    PaymentMethod
+  amount    Decimal       @db.Decimal(10, 2)
+  createdAt DateTime      @default(now())
+
+  allocations PaymentItemAllocation[]
+
+  @@map("payment")
+}
+
+model PaymentItemAllocation {
+  id          String    @id @default(cuid())
+  paymentId   String
+  payment     Payment   @relation(fields: [paymentId], references: [id])
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
+  amount      Decimal   @db.Decimal(10, 2)
+
+  @@map("payment_item_allocation")
+}
+
+model MenuCategory {
+  id        String   @id @default(cuid())
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items MenuItem[]
+
+  @@map("menu_category")
+}
+
+model MenuItem {
+  id          String       @id @default(cuid())
+  categoryId  String
+  category    MenuCategory @relation(fields: [categoryId], references: [id])
+  name        String
+  description String?
+  price       Decimal      @db.Decimal(10, 2)
+  type        MenuItemType
+  available   Boolean      @default(true)
+  sortOrder   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  orderItems OrderItem[]
+
+  @@map("menu_item")
+}
+
