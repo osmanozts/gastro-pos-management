@@ -1,4 +1,4 @@
-import { defaultConfig } from '@tamagui/config/v4'
+import { config as v3Config } from '@tamagui/config/v3'
 import { createFont, createTamagui, createTokens } from '@tamagui/core'
 
 // ─── Fonts ────────────────────────────────────────────────────────────────────
@@ -12,14 +12,11 @@ const interFont = createFont({
 })
 
 // ─── Tokens ───────────────────────────────────────────────────────────────────
-// In Tamagui v4: colors live in themes, not tokens.
-// Tokens hold space, size, radius, zIndex — and static color primitives.
 
 const tokens = createTokens({
-  // Keep defaults for zIndex; override the rest
-  zIndex: { ...defaultConfig.tokens.zIndex },
+  zIndex: { ...v3Config.tokens.zIndex },
 
-  // 4px base unit — matches Chakra spacing scale exactly
+  // 4px base unit — matches Chakra spacing scale
   space: {
     0: 0,  1: 4,  2: 8,  3: 12, 4: 16,
     5: 20, 6: 24, 8: 32, 10: 40, 12: 48,
@@ -36,7 +33,7 @@ const tokens = createTokens({
 
   // Control + icon sizes from Chakra
   size: {
-    ...defaultConfig.tokens.size,
+    ...v3Config.tokens.size,
     controlSm: 36,  controlMd: 44,  controlLg: 52,
     iconSm: 16,     iconMd: 20,     iconLg: 24,
     iconXl: 28,     icon2xl: 32,    icon3xl: 36,     icon4xl: 40,
@@ -44,8 +41,9 @@ const tokens = createTokens({
     true: 44,
   },
 
-  // Static brand color primitives (theme-independent)
+  // Brand color primitives + v3 palette
   color: {
+    ...v3Config.tokens.color,
     brand:       '#88172C',
     brandDark:   '#5F0F1F',
     brandSubtle: '#EFEDEA',
@@ -62,14 +60,10 @@ const tokens = createTokens({
 })
 
 // ─── Light theme ──────────────────────────────────────────────────────────────
-// Overrides Tamagui's built-in light theme with the app's semantic palette.
-// Keys prefixed with $ will be usable as token references in components.
 
 const lightTheme = {
-  // Spread Tamagui default light values first, then override
-  ...(defaultConfig.themes as Record<string, object>).light,
+  ...v3Config.themes.light,
 
-  // Backgrounds
   background:            '#ffffff',
   backgroundHover:       '#EFEDEA',
   backgroundPress:       '#EFEDEA',
@@ -77,7 +71,6 @@ const lightTheme = {
   backgroundStrong:      '#EFEDEA',
   backgroundTransparent: 'rgba(255,255,255,0)',
 
-  // Text
   color:              '#18181B',
   colorHover:         '#18181B',
   colorPress:         '#18181B',
@@ -85,18 +78,15 @@ const lightTheme = {
   colorTransparent:   'rgba(24,24,27,0)',
   placeholderColor:   '#6B7280',
 
-  // Borders
   borderColor:        '#E5E7EB',
   borderColorHover:   '#88172C',
   borderColorFocus:   '#88172C',
   borderColorPress:   '#5F0F1F',
 
-  // Shadows (brand-tinted, from Chakra shadow tokens)
   shadowColor:        'rgba(136,23,44,0.15)',
   shadowColorHover:   'rgba(136,23,44,0.22)',
   outlineColor:       'rgba(136,23,44,0.32)',
 
-  // App-specific semantic tokens (accessible as $brandColor, $cardBackground, etc.)
   brandColor:            '#88172C',
   brandColorDark:        '#5F0F1F',
   brandColorSubtle:      '#EFEDEA',
@@ -112,14 +102,14 @@ const lightTheme = {
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 export const tamaguiConfig = createTamagui({
-  ...defaultConfig,
+  ...v3Config,
   fonts: {
     heading: interFont,
     body:    interFont,
   },
   tokens,
   themes: {
-    ...defaultConfig.themes,
+    ...v3Config.themes,
     light: lightTheme,
   },
 })

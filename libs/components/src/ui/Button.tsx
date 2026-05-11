@@ -1,26 +1,37 @@
-import { Button as TamaguiButton, type ButtonProps } from 'tamagui'
+import type { ReactNode } from 'react'
+import { Button as TamaguiButton } from 'tamagui'
+import type { GestureResponderEvent } from 'react-native'
 
 type Intent = 'primary' | 'secondary' | 'danger' | 'ghost'
 
-interface AppButtonProps extends Omit<ButtonProps, 'variant'> {
+export interface ButtonProps {
   intent?: Intent
+  children?: ReactNode
+  onPress?: (e: GestureResponderEvent) => void
+  disabled?: boolean
+  width?: number | string
+  size?: number | string
 }
 
-const intentStyles: Record<Intent, { bg: string; pressOpacity: number }> = {
-  primary:   { bg: '$brandColor',      pressOpacity: 0.85 },
-  secondary: { bg: '$cardBackground',  pressOpacity: 0.85 },
-  danger:    { bg: '$red9',            pressOpacity: 0.85 },
-  ghost:     { bg: 'transparent',      pressOpacity: 0.6  },
+const intentBg: Record<Intent, string> = {
+  primary:   '$brandColor',
+  secondary: '$cardBackground',
+  danger:    '$red9',
+  ghost:     'transparent',
 }
 
-export function Button({ intent = 'primary', ...props }: AppButtonProps) {
-  const { bg, pressOpacity } = intentStyles[intent]
+export function Button({ intent = 'primary', children, onPress, disabled, width, size }: ButtonProps) {
   return (
     <TamaguiButton
       borderRadius="$10"
-      backgroundColor={bg}
-      pressStyle={{ opacity: pressOpacity }}
-      {...props}
-    />
+      backgroundColor={intentBg[intent]}
+      pressStyle={{ opacity: 0.85 }}
+      onPress={onPress}
+      disabled={disabled}
+      width={width}
+      size={size}
+    >
+      {children}
+    </TamaguiButton>
   )
 }

@@ -5,7 +5,9 @@
   "scripts": {
     "db:seed": "cd apps/api && npx ts-node -r dotenv/config prisma/seed.ts",
     "generate:openapi": "cd apps/api && npx ts-node --project tsconfig.scripts.json src/generate-openapi.ts",
-    "generate:types": "npm run generate:openapi && npx openapi-typescript openapi.json -o libs/api-client/src/lib/types.generated.ts"
+    "generate:types": "npm run generate:openapi && npx openapi-typescript openapi.json -o libs/api-client/src/lib/types.generated.ts",
+    "storybook": "storybook dev -p 6006 --config-dir apps/storybook/.storybook",
+    "build-storybook": "storybook build --config-dir apps/storybook/.storybook --output-dir dist/storybook"
   },
   "private": true,
   "dependencies": {
@@ -18,10 +20,10 @@
     "@nestjs/throttler": "^6.5.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "@tamagui/animations-css": "^2.0.0-rc.42",
-    "@tamagui/animations-react-native": "^2.0.0-rc.42",
-    "@tamagui/config": "^2.0.0-rc.42",
-    "@tamagui/core": "^2.0.0-rc.42",
+    "@tamagui/animations-css": "^1.144.4",
+    "@tamagui/animations-react-native": "^1.144.4",
+    "@tamagui/config": "^1.144.4",
+    "@tamagui/core": "^1.144.4",
     "@thallesp/nestjs-better-auth": "^2.4.0",
     "axios": "^1.6.0",
     "better-auth": "^1.6.10",
@@ -33,7 +35,7 @@
     "pg": "^8.20.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
-    "tamagui": "^2.0.0-rc.42"
+    "tamagui": "^1.144.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
@@ -48,6 +50,9 @@
     "@nx/web": "22.7.1",
     "@nx/webpack": "22.7.1",
     "@nx/workspace": "22.7.1",
+    "@storybook/addon-essentials": "^8.6.18",
+    "@storybook/react": "^8.6.18",
+    "@storybook/react-vite": "^8.6.18",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
@@ -56,7 +61,9 @@
     "@types/node": "20.19.9",
     "@types/react": "^19.2.14",
     "@types/react-native": "^0.72.8",
+    "@types/react-native-web": "^0.19.2",
     "@types/supertest": "^7.2.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
@@ -68,6 +75,8 @@
     "prisma": "^7.8.0",
     "react": "^19.2.6",
     "react-native": "^0.85.3",
+    "react-native-web": "^0.21.2",
+    "storybook": "^8.6.18",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.0",
     "ts-loader": "^9.5.7",
@@ -77,6 +86,7 @@
     "tsx": "^4.21.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0",
+    "vite": "^6.4.2",
     "webpack-cli": "^5.1.4"
   }
 }

@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react'
 import { YStack, type YStackProps } from 'tamagui'
 
-interface CardProps extends YStackProps {
+export interface CardProps extends YStackProps {
   elevated?: boolean
+  children?: ReactNode
 }
 
-export function Card({ elevated = false, ...props }: CardProps) {
+export function Card({ elevated = false, children, ...props }: CardProps) {
   return (
     <YStack
       backgroundColor="$cardBackground"
@@ -17,6 +19,8 @@ export function Card({ elevated = false, ...props }: CardProps) {
       shadowOpacity={elevated ? 1 : 0}
       shadowRadius={elevated ? 16 : 0}
       {...props}
-    />
+    >
+      {children}
+    </YStack>
   )
 }

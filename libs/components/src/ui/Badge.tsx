@@ -2,7 +2,7 @@ import { Text, XStack } from 'tamagui'
 
 type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'brand'
 
-interface BadgeProps {
+export interface BadgeProps {
   label: string
   variant?: BadgeVariant
 }
@@ -16,16 +16,16 @@ const variantStyles: Record<BadgeVariant, { bg: string; color: string }> = {
 }
 
 export function Badge({ label, variant = 'default' }: BadgeProps) {
-  const styles = variantStyles[variant]
+  const { bg, color } = variantStyles[variant]
   return (
     <XStack
-      backgroundColor={styles.bg}
+      backgroundColor={bg}
       paddingHorizontal="$2"
       paddingVertical="$1"
       borderRadius="$10"
       alignSelf="flex-start"
     >
-      <Text fontSize="$1" fontWeight="600" color={styles.color} textTransform="uppercase">
+      <Text fontSize="$1" fontWeight="600" color={color} textTransform="uppercase">
         {label}
       </Text>
     </XStack>
