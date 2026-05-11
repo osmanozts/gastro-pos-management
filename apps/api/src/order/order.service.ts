@@ -70,6 +70,29 @@ export class OrderService {
         (sum, a) => sum.plus(a.amount),
         new Prisma.Decimal(0),
       );
+
+      const addons = item.children.map((child) => {
+        const childLineTotal = new Prisma.Decimal(child.unitPrice).mul(
+          child.quantity,
+        );
+        const childPaid = child.paymentAllocations.reduce(
+          (sum, a) => sum.plus(a.amount),
+          new Prisma.Decimal(0),
+        );
+        return {
+          id: child.id,
+          menuItem: child.menuItem,
+          lineType: child.lineType,
+          quantity: child.quantity,
+          unitPrice: child.unitPrice,
+          notes: child.notes,
+          status: child.status,
+          lineTotal: childLineTotal,
+          paid: childPaid,
+          remaining: childLineTotal.minus(childPaid),
+        };
+      });
+
       return {
         id: item.id,
         menuItem: item.menuItem,
@@ -81,26 +104,25 @@ export class OrderService {
         lineTotal,
         paid,
         remaining: lineTotal.minus(paid),
-        addons: item.children.map((child) => ({
-          id: child.id,
-          menuItem: child.menuItem,
-          lineType: child.lineType,
-          quantity: child.quantity,
-          unitPrice: child.unitPrice,
-          notes: child.notes,
-          status: child.status,
-        })),
+        addons,
       };
     });
 
-    const grandTotal = itemSummaries.reduce(
-      (sum, i) => sum.plus(i.lineTotal),
-      new Prisma.Decimal(0),
-    );
-    const totalPaid = itemSummaries.reduce(
-      (sum, i) => sum.plus(i.paid),
-      new Prisma.Decimal(0),
-    );
+    const grandTotal = itemSummaries.reduce((sum, i) => {
+      const addonTotal = i.addons.reduce(
+        (aSum, a) => aSum.plus(a.lineTotal),
+        new Prisma.Decimal(0),
+      );
+      return sum.plus(i.lineTotal).plus(addonTotal);
+    }, new Prisma.Decimal(0));
+
+    const totalPaid = itemSummaries.reduce((sum, i) => {
+      const addonPaid = i.addons.reduce(
+        (aSum, a) => aSum.plus(a.paid),
+        new Prisma.Decimal(0),
+      );
+      return sum.plus(i.paid).plus(addonPaid);
+    }, new Prisma.Decimal(0));
 
     return {
       orderId: order.id,
