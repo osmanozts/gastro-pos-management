@@ -2,7 +2,9 @@
   "name": "@gastro-pos-management/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "db:seed": "cd apps/api && npx ts-node -r dotenv/config prisma/seed.ts"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",

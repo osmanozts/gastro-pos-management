@@ -12,6 +12,7 @@ import {
 import { PrismaService } from '../database/prisma.service';
 import { AddOrderItemsDto } from './dto/add-order-items.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { GetOrdersQueryDto } from './dto/get-orders-query.dto';
 import { UpdateOrderItemStatusDto } from './dto/update-order-item-status.dto';
 
 @Injectable()
@@ -19,6 +20,17 @@ export class OrderService {
   constructor(private prisma: PrismaService) {}
 
   // ─── Queries ─────────────────────────────────────────────────
+
+  findAll(query: GetOrdersQueryDto) {
+    return this.prisma.order.findMany({
+      where: {
+        ...(query.tableId && { tableId: query.tableId }),
+        ...(query.status && { status: query.status }),
+      },
+      include: this.orderInclude(),
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
   async findById(id: string) {
     const order = await this.prisma.order.findUnique({
@@ -170,6 +182,30 @@ export class OrderService {
     }
 
     await this.prisma.orderItem.createMany({ data: itemsData });
+
+    return this.findById(orderId);
+  }
+
+  async removeItem(orderId: string, itemId: string) {
+    const order = await this.findOrderOrThrow(orderId);
+
+    if (order.status !== OrderStatus.DRAFT) {
+      throw new BadRequestException('Items can only be removed from DRAFT orders');
+    }
+
+    const item = await this.prisma.orderItem.findFirst({
+      where: { id: itemId, orderId },
+    });
+    if (!item) throw new NotFoundException('Order item not found');
+
+    if (item.status !== OrderItemStatus.CREATED) {
+      throw new BadRequestException(
+        'Only items with CREATED status can be removed',
+      );
+    }
+
+    await this.prisma.orderItem.deleteMany({ where: { parentId: itemId } });
+    await this.prisma.orderItem.delete({ where: { id: itemId } });
 
     return this.findById(orderId);
   }

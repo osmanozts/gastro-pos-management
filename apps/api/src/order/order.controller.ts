@@ -1,15 +1,18 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@thallesp/nestjs-better-auth';
 import { AddOrderItemsDto } from './dto/add-order-items.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { GetOrdersQueryDto } from './dto/get-orders-query.dto';
 import { UpdateOrderItemStatusDto } from './dto/update-order-item-status.dto';
 import { OrderService } from './order.service';
 
@@ -23,6 +26,11 @@ export class OrderController {
     return this.orderService.create(dto);
   }
 
+  @Get()
+  findAll(@Query() query: GetOrdersQueryDto) {
+    return this.orderService.findAll(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findById(id);
@@ -31,6 +39,11 @@ export class OrderController {
   @Post(':id/items')
   addItems(@Param('id') id: string, @Body() dto: AddOrderItemsDto) {
     return this.orderService.addItems(id, dto);
+  }
+
+  @Delete(':id/items/:itemId')
+  removeItem(@Param('id') id: string, @Param('itemId') itemId: string) {
+    return this.orderService.removeItem(id, itemId);
   }
 
   @Patch(':id/send')
