@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@thallesp/nestjs-better-auth';
 import { AddOrderItemsDto } from './dto/add-order-items.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -16,6 +17,7 @@ import { GetOrdersQueryDto } from './dto/get-orders-query.dto';
 import { UpdateOrderItemStatusDto } from './dto/update-order-item-status.dto';
 import { OrderService } from './order.service';
 
+@ApiTags('orders')
 @Controller('orders')
 @UseGuards(AuthGuard)
 export class OrderController {

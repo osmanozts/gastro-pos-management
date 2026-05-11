@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@thallesp/nestjs-better-auth';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateMenuItemDto } from './dto/create-menu-item.dto';
@@ -17,6 +18,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateMenuItemDto } from './dto/update-menu-item.dto';
 import { MenuService } from './menu.service';
 
+@ApiTags('menu')
 @Controller('menu')
 @UseGuards(AuthGuard)
 export class MenuController {

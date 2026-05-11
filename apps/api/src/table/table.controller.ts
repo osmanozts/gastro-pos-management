@@ -8,12 +8,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@thallesp/nestjs-better-auth';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { UpdateTableStatusDto } from './dto/update-table-status.dto';
 import { TableService } from './table.service';
 
+@ApiTags('tables')
 @Controller('tables')
 @UseGuards(AuthGuard)
 export class TableController {

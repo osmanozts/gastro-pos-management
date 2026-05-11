@@ -13,6 +13,7 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "baseUrl": ".",
     "paths": {
       "@gastro-pos/api-client": ["libs/api-client/src/index.ts"]
     }

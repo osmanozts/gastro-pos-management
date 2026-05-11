@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { MenuModule } from './menu/menu.module';
 import { TableModule } from './table/table.module';
 import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 import { envValidationSchema } from './config/env.validation';
 
 @Module({
@@ -37,6 +38,7 @@ import { envValidationSchema } from './config/env.validation';
     MenuModule,
     TableModule,
     OrderModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [

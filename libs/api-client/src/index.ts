@@ -5,3 +5,4 @@ export { menuApi } from './lib/menu.api';
 export { ordersApi } from './lib/orders.api';
 export { paymentsApi } from './lib/payments.api';
 export type * from './lib/types';
+export type * from './lib/request-types';

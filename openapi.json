@@ -1,0 +1,1003 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/user/me": {
+      "get": {
+        "operationId": "UserController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/menu/categories": {
+      "get": {
+        "operationId": "MenuController_getCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      },
+      "post": {
+        "operationId": "MenuController_createCategory",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      }
+    },
+    "/menu/categories/{id}": {
+      "get": {
+        "operationId": "MenuController_getCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      },
+      "patch": {
+        "operationId": "MenuController_updateCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      },
+      "delete": {
+        "operationId": "MenuController_deleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      }
+    },
+    "/menu/items": {
+      "get": {
+        "operationId": "MenuController_getItems",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      },
+      "post": {
+        "operationId": "MenuController_createItem",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      }
+    },
+    "/menu/items/{id}": {
+      "get": {
+        "operationId": "MenuController_getItem",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      },
+      "patch": {
+        "operationId": "MenuController_updateItem",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      },
+      "delete": {
+        "operationId": "MenuController_deleteItem",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      }
+    },
+    "/menu/items/{id}/toggle": {
+      "patch": {
+        "operationId": "MenuController_toggleItem",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "menu"
+        ]
+      }
+    },
+    "/tables": {
+      "get": {
+        "operationId": "TableController_getAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "tables"
+        ]
+      },
+      "post": {
+        "operationId": "TableController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/tables/{id}": {
+      "get": {
+        "operationId": "TableController_getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "tables"
+        ]
+      },
+      "patch": {
+        "operationId": "TableController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "tables"
+        ]
+      },
+      "delete": {
+        "operationId": "TableController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/tables/{id}/status": {
+      "patch": {
+        "operationId": "TableController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTableStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/orders": {
+      "post": {
+        "operationId": "OrderController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      },
+      "get": {
+        "operationId": "OrderController_findAll",
+        "parameters": [
+          {
+            "name": "tableId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "clx1234567890",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "SENT_TO_KITCHEN",
+                "IN_PROGRESS",
+                "READY",
+                "SERVED",
+                "PARTIALLY_PAID",
+                "PAID",
+                "CLOSED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "operationId": "OrderController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}/items": {
+      "post": {
+        "operationId": "OrderController_addItems",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrderItemsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}/items/{itemId}": {
+      "delete": {
+        "operationId": "OrderController_removeItem",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}/send": {
+      "patch": {
+        "operationId": "OrderController_sendToKitchen",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}/bill": {
+      "get": {
+        "operationId": "OrderController_getBill",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/orders/{id}/items/{itemId}/status": {
+      "patch": {
+        "operationId": "OrderController_updateItemStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderItemStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/payments": {
+      "post": {
+        "operationId": "PaymentController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/order/{id}": {
+      "get": {
+        "operationId": "PaymentController_findByOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Gastro POS API",
+    "description": "Restaurant Bestellsystem",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Hauptgerichte"
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Hauptgerichte"
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        }
+      },
+      "CreateMenuItemDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "name": {
+            "type": "string",
+            "example": "Pizza Margherita"
+          },
+          "description": {
+            "type": "string",
+            "example": "Klassiker mit Tomaten und Mozzarella"
+          },
+          "price": {
+            "type": "number",
+            "example": 11.5
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MAIN",
+              "DRINK",
+              "ADDON",
+              "TOPPING",
+              "SIDE"
+            ]
+          },
+          "available": {
+            "type": "boolean",
+            "example": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "categoryId",
+          "name",
+          "price",
+          "type"
+        ]
+      },
+      "UpdateMenuItemDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "name": {
+            "type": "string",
+            "example": "Pizza Margherita"
+          },
+          "description": {
+            "type": "string",
+            "example": "Klassiker mit Tomaten und Mozzarella"
+          },
+          "price": {
+            "type": "number",
+            "example": 11.5
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MAIN",
+              "DRINK",
+              "ADDON",
+              "TOPPING",
+              "SIDE"
+            ]
+          },
+          "available": {
+            "type": "boolean",
+            "example": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        }
+      },
+      "CreateTableDto": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Tisch am Fenster"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 4,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "number",
+          "capacity"
+        ]
+      },
+      "UpdateTableDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Tisch am Fenster"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 4,
+            "minimum": 1
+          }
+        }
+      },
+      "UpdateTableStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "FREE",
+              "OCCUPIED",
+              "PARTIALLY_PAID"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "tableId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Tisch am Fenster"
+          }
+        },
+        "required": [
+          "tableId"
+        ]
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "menuItemId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "lineType": {
+            "type": "string",
+            "enum": [
+              "MAIN",
+              "ADDON",
+              "TOPPING",
+              "DRINK",
+              "SIDE"
+            ]
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1,
+            "minimum": 1
+          },
+          "notes": {
+            "type": "string",
+            "example": "ohne Zwiebeln"
+          },
+          "parentId": {
+            "type": "string",
+            "example": "clx0987654321"
+          }
+        },
+        "required": [
+          "menuItemId",
+          "lineType"
+        ]
+      },
+      "AddOrderItemsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UpdateOrderItemStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "SENT_TO_KITCHEN",
+              "READY",
+              "SERVED",
+              "PAID"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "PaymentAllocationDto": {
+        "type": "object",
+        "properties": {
+          "orderItemId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "amount": {
+            "type": "number",
+            "example": 13.5,
+            "minimum": 0.01
+          }
+        },
+        "required": [
+          "orderItemId",
+          "amount"
+        ]
+      },
+      "CreatePaymentDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "CARD"
+            ]
+          },
+          "allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAllocationDto"
+            }
+          }
+        },
+        "required": [
+          "orderId",
+          "method",
+          "allocations"
+        ]
+      }
+    }
+  }
+}
