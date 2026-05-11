@@ -1,101 +1,165 @@
-# GastroPosManagement
+# gastro-pos-management
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A REST API backend for a restaurant point-of-sale system, built as an NX monorepo. It covers the full lifecycle of a restaurant order — from table management and menu configuration, through kitchen/service workflows, to partial and full payment processing.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/nest?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## What it does
 
-## Run tasks
+- **Tables** — manage table inventory and track occupancy status (`FREE` / `OCCUPIED` / `PARTIALLY_PAID`)
+- **Menu** — categories with sorted menu items; items can be toggled available/unavailable
+- **Orders** — create orders per table, add items with optional addon/topping lines, send to kitchen, track item-level kitchen and service status
+- **Payments** — partial payment support via item-level allocations; order and table status update automatically as items are paid
+- **Kitchen / Service views** — covered by `GET /orders` with status filters; no separate module needed
+- **Auth** — cookie-based session authentication via Better Auth; all endpoints are protected
 
-To run the dev server for your app, use:
+---
+
+## Monorepo structure
+
+```
+gastro-pos-management/
+├── apps/
+│   └── api/                  # NestJS REST API
+│       ├── src/
+│       │   ├── auth/         # Better Auth integration
+│       │   ├── user/         # Current user endpoint
+│       │   ├── menu/         # Categories + menu items
+│       │   ├── table/        # Table CRUD + status
+│       │   ├── order/        # Order lifecycle + kitchen flow
+│       │   └── payment/      # Payments + item allocations
+│       └── prisma/
+│           ├── schema.prisma
+│           └── seed.ts
+└── libs/
+    └── api-client/           # Framework-agnostic HTTP client (shared across frontend apps)
+        └── src/lib/
+            ├── client.ts         # Base fetch wrapper
+            ├── types.ts          # Response types (manually maintained)
+            ├── types.generated.ts # Request types (auto-generated from OpenAPI)
+            ├── request-types.ts  # Named re-exports of generated request types
+            ├── auth.api.ts
+            ├── tables.api.ts
+            ├── menu.api.ts
+            ├── orders.api.ts
+            └── payments.api.ts
+```
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Framework | NestJS 11 |
+| Database | PostgreSQL |
+| ORM | Prisma 7 (PrismaPg adapter) |
+| Auth | Better Auth (cookie sessions) |
+| Validation | class-validator + class-transformer |
+| API docs | @nestjs/swagger (Swagger UI at `/docs` in dev) |
+| Type generation | openapi-typescript |
+| Monorepo | NX 22 |
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20+
+- PostgreSQL (or Docker)
+
+### 1. Environment
+
+Create `apps/api/.env`:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/gastro_pos"
+BETTER_AUTH_SECRET="your-secret-here"
+BETTER_AUTH_URL="http://localhost:3000"
+FRONTEND_URL="http://localhost:4200"
+NODE_ENV="development"
+```
+
+### 2. Install dependencies
+
+```sh
+npm install
+```
+
+### 3. Database setup
+
+```sh
+cd apps/api
+npx prisma migrate dev
+npm run db:seed        # seeds tables, categories, and menu items
+```
+
+### 4. Run the API
 
 ```sh
 npx nx serve api
+# → http://localhost:3000
+# → http://localhost:3000/docs  (Swagger UI, dev only)
 ```
 
-To create a production bundle:
+---
+
+## API overview
+
+| Module | Endpoints |
+|---|---|
+| Auth | `POST /auth/sign-up` `POST /auth/sign-in` `POST /auth/sign-out` |
+| User | `GET /user/me` |
+| Menu | `GET/POST /menu/categories` `PATCH/DELETE /menu/categories/:id` `GET/POST /menu/items` `PATCH/DELETE /menu/items/:id` `PATCH /menu/items/:id/toggle` |
+| Tables | `GET/POST /tables` `GET/PATCH/DELETE /tables/:id` `PATCH /tables/:id/status` |
+| Orders | `GET/POST /orders` `GET /orders/:id` `POST /orders/:id/items` `DELETE /orders/:id/items/:itemId` `PATCH /orders/:id/send` `GET /orders/:id/bill` `PATCH /orders/:id/items/:itemId/status` |
+| Payments | `POST /payments` `GET /payments/order/:id` |
+
+Query filters on `GET /orders`: `?tableId=` `?status=` `?tableStatus=`
+
+---
+
+## Shared api-client
+
+The `libs/api-client` library provides typed API functions and can be imported by any frontend app in the monorepo.
+
+```ts
+// In any app
+import { configureApiClient, ordersApi, paymentsApi } from '@gastro-pos/api-client';
+import type { Order, Bill, CreateOrderDto } from '@gastro-pos/api-client';
+
+configureApiClient({ baseUrl: 'http://localhost:3000' });
+
+const order = await ordersApi.getById('clx123');
+const bill  = await ordersApi.getBill('clx123');
+```
+
+---
+
+## Type generation
+
+Request body types in `types.generated.ts` are auto-generated from the live OpenAPI spec. Run this after any DTO change:
 
 ```sh
-npx nx build api
+npm run generate:types
 ```
 
-To see all available targets to run for a project, run:
+This command:
+1. Boots the NestJS app headless and writes `openapi.json`
+2. Runs `openapi-typescript` to regenerate `libs/api-client/src/lib/types.generated.ts`
 
-```sh
-npx nx show project api
-```
+Response types (`Order`, `Bill`, `Table`, etc.) in `types.ts` are maintained manually.
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Scripts
 
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/nest:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/node:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/nest?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Script | Description |
+|---|---|
+| `npx nx serve api` | Start API in dev mode |
+| `npx nx build api` | Production build |
+| `npm run db:seed` | Seed database with sample data |
+| `npm run generate:openapi` | Write `openapi.json` from running app |
+| `npm run generate:types` | Full type generation (openapi → TypeScript) |
