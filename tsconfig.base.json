@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@gastro-pos/api-client": ["libs/api-client/src/index.ts"],
-      "@gastro-pos/theme": ["libs/theme/src/index.ts"],
-      "@gastro-pos/components": ["libs/components/src/index.ts"]
+      "@libs/api-client": ["libs/api-client/src/index.ts"],
+      "@libs/theme": ["libs/theme/src/index.ts"],
+      "@libs/components": ["libs/components/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

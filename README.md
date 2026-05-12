@@ -49,17 +49,17 @@ gastro-pos-management/
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Runtime | Node.js |
-| Framework | NestJS 11 |
-| Database | PostgreSQL |
-| ORM | Prisma 7 (PrismaPg adapter) |
-| Auth | Better Auth (cookie sessions) |
-| Validation | class-validator + class-transformer |
-| API docs | @nestjs/swagger (Swagger UI at `/docs` in dev) |
-| Type generation | openapi-typescript |
-| Monorepo | NX 22 |
+| Layer           | Technology                                     |
+| --------------- | ---------------------------------------------- |
+| Runtime         | Node.js                                        |
+| Framework       | NestJS 11                                      |
+| Database        | PostgreSQL                                     |
+| ORM             | Prisma 7 (PrismaPg adapter)                    |
+| Auth            | Better Auth (cookie sessions)                  |
+| Validation      | class-validator + class-transformer            |
+| API docs        | @nestjs/swagger (Swagger UI at `/docs` in dev) |
+| Type generation | openapi-typescript                             |
+| Monorepo        | NX 22                                          |
 
 ---
 
@@ -108,14 +108,14 @@ npx nx serve api
 
 ## API overview
 
-| Module | Endpoints |
-|---|---|
-| Auth | `POST /auth/sign-up` `POST /auth/sign-in` `POST /auth/sign-out` |
-| User | `GET /user/me` |
-| Menu | `GET/POST /menu/categories` `PATCH/DELETE /menu/categories/:id` `GET/POST /menu/items` `PATCH/DELETE /menu/items/:id` `PATCH /menu/items/:id/toggle` |
-| Tables | `GET/POST /tables` `GET/PATCH/DELETE /tables/:id` `PATCH /tables/:id/status` |
-| Orders | `GET/POST /orders` `GET /orders/:id` `POST /orders/:id/items` `DELETE /orders/:id/items/:itemId` `PATCH /orders/:id/send` `GET /orders/:id/bill` `PATCH /orders/:id/items/:itemId/status` |
-| Payments | `POST /payments` `GET /payments/order/:id` |
+| Module   | Endpoints                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Auth     | `POST /auth/sign-up` `POST /auth/sign-in` `POST /auth/sign-out`                                                                                                                           |
+| User     | `GET /user/me`                                                                                                                                                                            |
+| Menu     | `GET/POST /menu/categories` `PATCH/DELETE /menu/categories/:id` `GET/POST /menu/items` `PATCH/DELETE /menu/items/:id` `PATCH /menu/items/:id/toggle`                                      |
+| Tables   | `GET/POST /tables` `GET/PATCH/DELETE /tables/:id` `PATCH /tables/:id/status`                                                                                                              |
+| Orders   | `GET/POST /orders` `GET /orders/:id` `POST /orders/:id/items` `DELETE /orders/:id/items/:itemId` `PATCH /orders/:id/send` `GET /orders/:id/bill` `PATCH /orders/:id/items/:itemId/status` |
+| Payments | `POST /payments` `GET /payments/order/:id`                                                                                                                                                |
 
 Query filters on `GET /orders`: `?tableId=` `?status=` `?tableStatus=`
 
@@ -127,13 +127,13 @@ The `libs/api-client` library provides typed API functions and can be imported b
 
 ```ts
 // In any app
-import { configureApiClient, ordersApi, paymentsApi } from '@gastro-pos/api-client';
-import type { Order, Bill, CreateOrderDto } from '@gastro-pos/api-client';
+import { configureApiClient, ordersApi, paymentsApi } from '@libs/api-client';
+import type { Order, Bill, CreateOrderDto } from '@libs/api-client';
 
 configureApiClient({ baseUrl: 'http://localhost:3000' });
 
 const order = await ordersApi.getById('clx123');
-const bill  = await ordersApi.getBill('clx123');
+const bill = await ordersApi.getBill('clx123');
 ```
 
 ---
@@ -147,6 +147,7 @@ npm run generate:types
 ```
 
 This command:
+
 1. Boots the NestJS app headless and writes `openapi.json`
 2. Runs `openapi-typescript` to regenerate `libs/api-client/src/lib/types.generated.ts`
 
@@ -156,10 +157,10 @@ Response types (`Order`, `Bill`, `Table`, etc.) in `types.ts` are maintained man
 
 ## Scripts
 
-| Script | Description |
-|---|---|
-| `npx nx serve api` | Start API in dev mode |
-| `npx nx build api` | Production build |
-| `npm run db:seed` | Seed database with sample data |
-| `npm run generate:openapi` | Write `openapi.json` from running app |
-| `npm run generate:types` | Full type generation (openapi → TypeScript) |
+| Script                     | Description                                 |
+| -------------------------- | ------------------------------------------- |
+| `npx nx serve api`         | Start API in dev mode                       |
+| `npx nx build api`         | Production build                            |
+| `npm run db:seed`          | Seed database with sample data              |
+| `npm run generate:openapi` | Write `openapi.json` from running app       |
+| `npm run generate:types`   | Full type generation (openapi → TypeScript) |

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Button } from '@gastro-pos/components'
+import { Button } from '@libs/components'
 import { XStack } from 'tamagui'
 
 const meta: Meta<typeof Button> = {

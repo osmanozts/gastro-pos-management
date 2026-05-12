@@ -1,6 +1,5 @@
 import type { Preview } from '@storybook/react'
-import React from 'react'
-import { AppThemeProvider } from '@gastro-pos/theme'
+import { AppThemeProvider } from '@libs/theme'
 
 const preview: Preview = {
   decorators: [
