@@ -16,8 +16,14 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  const corsOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : isDev
+      ? ['http://localhost:5173', 'http://localhost:8081']
+      : [];
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+    origin: corsOrigins,
     credentials: true,
   });
 

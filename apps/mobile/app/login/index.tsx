@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, TextInput } from 'react-nat
 import { useRouter } from 'expo-router'
 import { YStack, XStack } from 'tamagui'
 import { Button, Card, Input, Text } from '@libs/components'
+import { authApi, ApiError } from '@libs/api-client'
 
 function validate(email: string, password: string) {
   const errors: { email?: string; password?: string } = {}
@@ -26,18 +27,30 @@ export default function LoginScreen() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [loading, setLoading] = useState(false)
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({})
+  const [serverError, setServerError] = useState<string | null>(null)
 
   const passwordRef = useRef<TextInput>(null)
 
-  function handleSubmit() {
+  async function handleSubmit() {
     setTouched({ email: true, password: true })
     const errs = validate(email, password)
     setErrors(errs)
     if (Object.keys(errs).length > 0) return
 
+    setServerError(null)
     setLoading(true)
-    // TODO: connect to auth API
-    setTimeout(() => setLoading(false), 1500)
+    try {
+      await authApi.signIn({ email, password })
+      router.replace('/(tabs)')
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        setServerError('E-Mail oder Passwort ist falsch.')
+      } else {
+        setServerError('Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.')
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -126,6 +139,12 @@ export default function LoginScreen() {
                     Passwort vergessen?
                   </Text>
                 </XStack>
+
+                {serverError && (
+                  <Text size="$3" color="$red9" textAlign="center">
+                    {serverError}
+                  </Text>
+                )}
 
                 {/* Submit */}
                 <Button

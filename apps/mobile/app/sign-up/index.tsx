@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, TextInput } from 'react-nat
 import { useRouter } from 'expo-router'
 import { YStack, XStack } from 'tamagui'
 import { Button, Card, Input, Text } from '@libs/components'
+import { authApi, ApiError } from '@libs/api-client'
 
 type FormErrors = {
     name?: string
@@ -48,6 +49,7 @@ export default function SignUpScreen() {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [errors, setErrors] = useState<FormErrors>({})
     const [loading, setLoading] = useState(false)
+    const [serverError, setServerError] = useState<string | null>(null)
     const [touched, setTouched] = useState<Record<keyof FormErrors, boolean>>({
         name: false,
         email: false,
@@ -64,15 +66,26 @@ export default function SignUpScreen() {
         setErrors((e) => ({ ...e, [field]: errs[field] }))
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         setTouched({ name: true, email: true, password: true, confirmPassword: true })
         const errs = validate(name, email, password, confirmPassword)
         setErrors(errs)
         if (Object.keys(errs).length > 0) return
 
+        setServerError(null)
         setLoading(true)
-        // TODO: connect to auth API
-        setTimeout(() => setLoading(false), 1500)
+        try {
+            await authApi.signUp({ name, email, password })
+            router.replace('/login')
+        } catch (err) {
+            if (err instanceof ApiError && err.status === 409) {
+                setServerError('Diese E-Mail-Adresse wird bereits verwendet.')
+            } else {
+                setServerError('Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.')
+            }
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -182,6 +195,12 @@ export default function SignUpScreen() {
                                         onSubmitEditing={handleSubmit}
                                     />
                                 </YStack>
+
+                                {serverError && (
+                                    <Text size="$3" color="$red9" textAlign="center">
+                                        {serverError}
+                                    </Text>
+                                )}
 
                                 {/* Submit */}
                                 <Button

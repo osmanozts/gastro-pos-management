@@ -7,7 +7,8 @@
     "types": ["node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "target": "es2021",
+    "useDefineForClassFields": true,
+    "target": "es2022",
   },
   "include": ["src/**/*.ts"],
   "exclude": [

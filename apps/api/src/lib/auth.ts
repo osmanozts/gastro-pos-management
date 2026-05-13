@@ -43,7 +43,9 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: [process.env.FRONTEND_URL ?? 'http://localhost:5173'],
+  trustedOrigins: process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : ['http://localhost:5173', 'http://localhost:8081'],
 });
 
 export type AuthUser = typeof auth.$Infer.Session.user;

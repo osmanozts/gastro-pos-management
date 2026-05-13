@@ -5,6 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { AppThemeProvider } from '@libs/theme'
+import { configureApiClient } from '@libs/api-client'
+
+configureApiClient({ baseUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000' })
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -43,6 +46,9 @@ function RootLayoutNav() {
   return (
     <AppThemeProvider defaultTheme="light">
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="sign-up" />
         <Stack.Screen name="(tabs)" />
       </Stack>
     </AppThemeProvider>
