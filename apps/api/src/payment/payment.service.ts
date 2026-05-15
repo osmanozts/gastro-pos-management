@@ -105,6 +105,18 @@ export class PaymentService {
       }
     }
 
+    // ── Auto-mark free (€0) items as PAID ───────────────────────
+    // Zero-price items (free toppings, etc.) cannot receive allocations
+    // due to the min-amount validation, so we mark them here automatically.
+    await this.prisma.orderItem.updateMany({
+      where: {
+        orderId: dto.orderId,
+        unitPrice: { equals: new Prisma.Decimal(0) },
+        status: { not: OrderItemStatus.PAID },
+      },
+      data: { status: OrderItemStatus.PAID },
+    });
+
     // ── Sync order + table status ────────────────────────────────
     await this.orderService.syncStatusAfterPayment(dto.orderId);
 

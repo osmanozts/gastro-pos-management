@@ -27,6 +27,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="cashier"
+        options={{
+          title: 'Kasse',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="money" size={22} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

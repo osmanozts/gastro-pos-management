@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
-import { ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
+import { Alert, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { YStack, XStack, Text } from 'tamagui';
+import { Dialog, YStack, XStack, Text } from 'tamagui';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Card, Badge, Button, Heading2, Heading3 } from '@libs/components';
 import { tablesApi, ordersApi } from '@libs/api-client';
-import type { Table, Order, OrderStatus } from '@libs/api-client';
+import type { Table, Order, OrderStatus, TableStatus } from '@libs/api-client';
 
 const INACTIVE: OrderStatus[] = ['PAID', 'CLOSED'];
 
@@ -39,6 +40,88 @@ function calcOrderTotal(order: Order): string {
   return total.toFixed(2);
 }
 
+const TABLE_STATUSES: { value: TableStatus; label: string; variant: 'success' | 'danger' | 'warning' }[] = [
+  { value: 'FREE',           label: 'Frei',        variant: 'success' },
+  { value: 'OCCUPIED',       label: 'Belegt',       variant: 'danger'  },
+  { value: 'PARTIALLY_PAID', label: 'Teilbezahlt',  variant: 'warning' },
+];
+
+function tableStatusVariant(s: TableStatus): 'success' | 'danger' | 'warning' {
+  if (s === 'FREE') return 'success';
+  if (s === 'OCCUPIED') return 'danger';
+  return 'warning';
+}
+
+function tableStatusLabel(s: TableStatus): string {
+  return TABLE_STATUSES.find((t) => t.value === s)?.label ?? s;
+}
+
+interface StatusPickerDialogProps {
+  open: boolean;
+  current: TableStatus;
+  saving: boolean;
+  onSelect: (status: TableStatus) => void;
+  onClose: () => void;
+}
+
+function StatusPickerDialog({ open, current, saving, onSelect, onClose }: StatusPickerDialogProps) {
+  return (
+    <Dialog modal open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          key="overlay"
+          animation="quick"
+          opacity={0.5}
+          backgroundColor="black"
+          enterStyle={{ opacity: 0 }}
+          exitStyle={{ opacity: 0 }}
+        />
+        <Dialog.Content
+          key="content"
+          bordered
+          elevate
+          borderRadius="$5"
+          padding="$5"
+          width="85%"
+          animation="quick"
+          enterStyle={{ opacity: 0, scale: 0.95 }}
+          exitStyle={{ opacity: 0, scale: 0.95 }}
+        >
+          <Dialog.Title marginBottom="$4">
+            <Text fontSize="$5" fontWeight="700">Tischstatus ändern</Text>
+          </Dialog.Title>
+          <YStack gap="$2">
+            {TABLE_STATUSES.map(({ value, label, variant }) => (
+              <TouchableOpacity key={value} onPress={() => onSelect(value)} disabled={saving}>
+                <XStack
+                  borderWidth={2}
+                  borderColor={current === value ? '$brandColor' : '$borderColor'}
+                  borderRadius="$4"
+                  padding="$3"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  backgroundColor={current === value ? '$brandSubtle' : '$background'}
+                  opacity={saving ? 0.5 : 1}
+                >
+                  <Badge label={label} variant={variant} />
+                  {current === value && (
+                    <FontAwesome name="check" size={16} color="#88172C" />
+                  )}
+                </XStack>
+              </TouchableOpacity>
+            ))}
+          </YStack>
+          <Dialog.Close asChild>
+            <Button intent="ghost" onPress={onClose} width="100%">
+              Abbrechen
+            </Button>
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog>
+  );
+}
+
 function OrderCard({ order, onPress }: { order: Order; onPress: () => void }) {
   const itemCount = order.items.reduce((s, i) => s + i.quantity, 0);
   return (
@@ -63,6 +146,8 @@ export default function TischDetailScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [savingStatus, setSavingStatus] = useState(false);
 
   const load = useCallback(async () => {
     const [tableData, allOrders] = await Promise.all([
@@ -86,6 +171,23 @@ export default function TischDetailScreen() {
     setRefreshing(false);
   }, [load]);
 
+  const handleStatusChange = useCallback(async (status: TableStatus) => {
+    if (status === table?.status) {
+      setShowStatusDialog(false);
+      return;
+    }
+    setSavingStatus(true);
+    try {
+      const updated = await tablesApi.updateStatus(id, status);
+      setTable(updated);
+      setShowStatusDialog(false);
+    } catch {
+      Alert.alert('Fehler', 'Status konnte nicht geändert werden.');
+    } finally {
+      setSavingStatus(false);
+    }
+  }, [id, table?.status]);
+
   if (loading) {
     return (
       <YStack flex={1} justifyContent="center" alignItems="center" backgroundColor="$background">
@@ -107,10 +209,23 @@ export default function TischDetailScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#88172C" />
         }
       >
-        <XStack alignItems="center" justifyContent="space-between" marginBottom="$4">
-          <Heading2>{tableName}</Heading2>
+        <XStack alignItems="flex-start" justifyContent="space-between" marginBottom="$4">
+          <YStack flex={1} marginRight="$3">
+            <Heading2>{tableName}</Heading2>
+            {table && (
+              <Text fontSize="$3" color="$textMuted" marginTop="$1">{table.capacity} Personen</Text>
+            )}
+          </YStack>
           {table && (
-            <Text fontSize="$3" color="$textMuted">{table.capacity} Personen</Text>
+            <TouchableOpacity onPress={() => setShowStatusDialog(true)}>
+              <XStack alignItems="center" gap="$2">
+                <Badge
+                  label={tableStatusLabel(table.status)}
+                  variant={tableStatusVariant(table.status)}
+                />
+                <FontAwesome name="pencil" size={13} color="#9ca3af" />
+              </XStack>
+            </TouchableOpacity>
           )}
         </XStack>
 
@@ -150,6 +265,16 @@ export default function TischDetailScreen() {
           Neue Bestellung
         </Button>
       </YStack>
+
+      {table && (
+        <StatusPickerDialog
+          open={showStatusDialog}
+          current={table.status}
+          saving={savingStatus}
+          onSelect={handleStatusChange}
+          onClose={() => setShowStatusDialog(false)}
+        />
+      )}
     </YStack>
   );
 }

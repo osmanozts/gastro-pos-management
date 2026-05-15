@@ -14,10 +14,10 @@ export interface ButtonProps {
 }
 
 const intentBg: Record<Intent, string> = {
-  primary:   '$brandColor',
+  primary: '$brandColor',
   secondary: '$cardBackground',
-  danger:    '$red9',
-  ghost:     'transparent',
+  danger: '$red9',
+  ghost: 'transparent',
 }
 
 export function Button({ intent = 'primary', children, onPress, disabled, width, size }: ButtonProps) {
@@ -25,6 +25,8 @@ export function Button({ intent = 'primary', children, onPress, disabled, width,
     <TamaguiButton
       borderRadius="$10"
       backgroundColor={intentBg[intent]}
+      color={intent != "ghost" ? "$textInverse" : "$textMuted"}
+      borderColor={intent == "ghost" ? "$textMuted" : undefined}
       pressStyle={{ opacity: 0.85 }}
       onPress={onPress}
       disabled={disabled}
