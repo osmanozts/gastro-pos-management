@@ -166,6 +166,31 @@ export interface PaymentWithAllocations extends Payment {
   allocations: PaymentAllocation[];
 }
 
+// ─── Kitchen ──────────────────────────────────────────────────
+
+export interface KitchenOrderChild {
+  id: string;
+  menuItem: { id: string; name: string };
+  lineType: OrderItemLineType;
+  status: OrderItemStatus;
+}
+
+export interface KitchenOrderItem {
+  id: string;
+  menuItem: { id: string; name: string };
+  lineType: OrderItemLineType;
+  status: OrderItemStatus;
+  children: KitchenOrderChild[];
+}
+
+export interface KitchenOrder {
+  id: string;
+  table: { id: string; number: number; name: string | null };
+  status: OrderStatus;
+  createdAt: string;
+  items: KitchenOrderItem[];
+}
+
 // ─── Auth ─────────────────────────────────────────────────────
 
 export interface AuthUser {

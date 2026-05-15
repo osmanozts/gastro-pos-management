@@ -18,6 +18,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="kitchen"
+        options={{
+          title: 'Küche',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="cutlery" size={22} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

@@ -9,6 +9,7 @@ import { MenuModule } from './menu/menu.module';
 import { TableModule } from './table/table.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
+import { KitchenModule } from './kitchen/kitchen.module';
 import { envValidationSchema } from './config/env.validation';
 
 @Module({
@@ -39,6 +40,7 @@ import { envValidationSchema } from './config/env.validation';
     TableModule,
     OrderModule,
     PaymentModule,
+    KitchenModule,
   ],
   controllers: [],
   providers: [
