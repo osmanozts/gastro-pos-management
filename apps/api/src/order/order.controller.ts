@@ -43,6 +43,11 @@ export class OrderController {
     return this.orderService.addItems(id, dto);
   }
 
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.orderService.delete(id);
+  }
+
   @Delete(':id/items/:itemId')
   removeItem(@Param('id') id: string, @Param('itemId') itemId: string) {
     return this.orderService.removeItem(id, itemId);

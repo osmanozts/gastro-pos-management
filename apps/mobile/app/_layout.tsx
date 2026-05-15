@@ -50,6 +50,7 @@ function RootLayoutNav() {
         <Stack.Screen name="login" />
         <Stack.Screen name="sign-up" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="tables" />
       </Stack>
     </AppThemeProvider>
   );

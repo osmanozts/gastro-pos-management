@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "db:seed": "cd apps/api && npx ts-node -r dotenv/config prisma/seed.ts",
+    "db:seed": "cd apps/api && npx ts-node --project tsconfig.scripts.json -r dotenv/config prisma/seed.ts",
     "generate:openapi": "cd apps/api && npx ts-node --project tsconfig.scripts.json src/generate-openapi.ts",
     "generate:types": "npm run generate:openapi && npx openapi-typescript openapi.json -o libs/api-client/src/lib/types.generated.ts",
     "storybook": "storybook dev -p 6006 --config-dir apps/storybook/.storybook",

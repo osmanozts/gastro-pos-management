@@ -151,11 +151,11 @@ model Order {
 model OrderItem {
   id         String            @id @default(cuid())
   orderId    String
-  order      Order             @relation(fields: [orderId], references: [id])
+  order      Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   menuItemId String
   menuItem   MenuItem          @relation(fields: [menuItemId], references: [id])
   parentId   String?
-  parent     OrderItem?        @relation("OrderItemChildren", fields: [parentId], references: [id])
+  parent     OrderItem?        @relation("OrderItemChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children   OrderItem[]       @relation("OrderItemChildren")
   lineType   OrderItemLineType
   status     OrderItemStatus   @default(CREATED)
@@ -173,7 +173,7 @@ model OrderItem {
 model Payment {
   id        String        @id @default(cuid())
   orderId   String
-  order     Order         @relation(fields: [orderId], references: [id])
+  order     Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
   method    PaymentMethod
   amount    Decimal       @db.Decimal(10, 2)
   createdAt DateTime      @default(now())
@@ -186,9 +186,9 @@ model Payment {
 model PaymentItemAllocation {
   id          String    @id @default(cuid())
   paymentId   String
-  payment     Payment   @relation(fields: [paymentId], references: [id])
+  payment     Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   orderItemId String
-  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
   amount      Decimal   @db.Decimal(10, 2)
 
   @@map("payment_item_allocation")

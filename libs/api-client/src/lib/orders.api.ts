@@ -33,6 +33,9 @@ export const ordersApi = {
     }>,
   ) => post<Order>(`/orders/${orderId}/items`, { items }),
 
+  delete: (id: string) =>
+    del<void>(`/orders/${id}`),
+
   removeItem: (orderId: string, itemId: string) =>
     del<Order>(`/orders/${orderId}/items/${itemId}`),
 

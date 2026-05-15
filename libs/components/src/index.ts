@@ -1,4 +1,6 @@
 export { Button } from './ui/Button';
+export { ConfirmDialog } from './ui/ConfirmDialog';
+export type { ConfirmDialogProps } from './ui/ConfirmDialog';
 export { Card } from './ui/Card';
 export { Badge } from './ui/Badge';
 export { Text, Heading1, Heading2, Heading3 } from './ui/Text';

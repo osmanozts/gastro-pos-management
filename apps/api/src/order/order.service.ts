@@ -208,6 +208,33 @@ export class OrderService {
     return this.findById(orderId);
   }
 
+  async delete(id: string) {
+    const order = await this.findOrderOrThrow(id);
+
+    if (
+      order.status === OrderStatus.PAID ||
+      order.status === OrderStatus.CLOSED
+    ) {
+      throw new BadRequestException('Cannot delete a paid or closed order');
+    }
+
+    await this.prisma.order.delete({ where: { id } });
+
+    const openCount = await this.prisma.order.count({
+      where: {
+        tableId: order.tableId,
+        status: { notIn: [OrderStatus.PAID, OrderStatus.CLOSED] },
+      },
+    });
+
+    if (openCount === 0) {
+      await this.prisma.table.update({
+        where: { id: order.tableId },
+        data: { status: TableStatus.FREE },
+      });
+    }
+  }
+
   async removeItem(orderId: string, itemId: string) {
     const order = await this.findOrderOrThrow(orderId);
 
